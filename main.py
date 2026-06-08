@@ -16,6 +16,7 @@ from pdf_export import export_pdf
 class ChordBook:
 
     def __init__(self, root):
+        self.sorted_songs = []
 
         self.root = root
         self.root.title("ChordBook")
@@ -146,13 +147,22 @@ class ChordBook:
         
     def load_song_list(self):
 
+        
+
         self.song_list.delete(0, tk.END)
 
-        for song in self.repo.all():
-            artist = song.get("artist", "")
+        self.sorted_songs = sorted(
+            self.repo.all(),
+            key=lambda s: (
+                s.get("artist", "").lower(),
+                s.get("title", "").lower()
+            )
+        )
+
+        for song in self.sorted_songs:
             self.song_list.insert(
                 tk.END,
-                f"{artist} - {song['title']}"
+                f"{song.get('artist','')} - {song.get('title','')}"
             )
 
     def new_song(self):
@@ -182,8 +192,8 @@ class ChordBook:
                 return
 
             song = self.repo.add_song(
-                artist,
                 title,
+                artist,
                 ""
             )
 
@@ -256,19 +266,12 @@ class ChordBook:
 
         idx = sel[0]
 
-        song = self.repo.all()[idx]
+        song = self.sorted_songs[idx]
 
         self.current_song = song
 
-        self.editor.delete(
-            "1.0",
-            tk.END
-        )
-
-        self.editor.insert(
-            "1.0",
-            song["content"]
-        )
+        self.editor.delete("1.0", tk.END)
+        self.editor.insert("1.0", song["content"])
 
         self.update_preview()
 
