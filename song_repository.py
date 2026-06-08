@@ -64,3 +64,14 @@ class SongRepository:
         ]
 
         self.save(data)
+    
+    def update_song_meta(self, song_id, title, artist):
+
+        data = self.load()
+
+        for song in data["songs"]:
+            if song["id"] == song_id:
+                song["title"] = title
+                song["artist"] = artist
+
+        self.save(data)

@@ -77,7 +77,7 @@ class ChordBook:
             self.on_song_select
         )
 
-        body.add(left, weight=1)
+        body.add(left, weight=1) #Idk zakaj se smanjenjem weighta poveca prostor
 
         center = ttk.Frame(body)
 
@@ -97,7 +97,7 @@ class ChordBook:
             self.autosave
         )
 
-        body.add(center, weight=3)
+        body.add(center, weight=128)
 
         right = ttk.Frame(body)
 
@@ -112,7 +112,13 @@ class ChordBook:
             expand=True
         )
 
-        body.add(right, weight=3)
+        body.add(right, weight=128)
+
+        self.menu = tk.Menu(self.root, tearoff=0)
+        self.menu.add_command(label="Uredi", command=self.edit_song)
+
+        self.song_list.bind("<Button-3>", self.show_context_menu)
+
 
         ttk.Button(
             toolbar,
@@ -136,7 +142,7 @@ class ChordBook:
             toolbar,
             text="Save",
             command=self.save_song
-        ).pack(side="right")
+        ).pack(side="left")
 
 
         ttk.Button(
@@ -144,12 +150,76 @@ class ChordBook:
             text="Refresh",
             command=self.refresh_song
         ).pack(side="left")
-        
+
+
+    def show_context_menu(self, event):
+
+        try:
+            # selektiraj item na koji si kliknuo
+            idx = self.song_list.nearest(event.y)
+            self.song_list.selection_clear(0, tk.END)
+            self.song_list.selection_set(idx)
+
+            self.selected_index = idx
+
+            self.menu.tk_popup(event.x_root, event.y_root)
+
+        finally:
+            self.menu.grab_release()
+
+    def edit_song(self):
+
+        if not hasattr(self, "selected_index"):
+            return
+
+        song = self.sorted_songs[self.selected_index]
+
+        win = tk.Toplevel(self.root)
+        win.title("Uredi pjesmu")
+        win.geometry("300x180")
+        win.resizable(False, False)
+
+        ttk.Label(win, text="Izvođač:").pack(pady=(10, 0))
+        artist_entry = ttk.Entry(win)
+        artist_entry.insert(0, song.get("artist", ""))
+        artist_entry.pack(fill="x", padx=10)
+
+        ttk.Label(win, text="Pjesma:").pack(pady=(10, 0))
+        title_entry = ttk.Entry(win)
+        title_entry.insert(0, song.get("title", ""))
+        title_entry.pack(fill="x", padx=10)
+
+        def save_changes():
+
+            new_artist = artist_entry.get().strip()
+            new_title = title_entry.get().strip()
+
+            if not new_artist or not new_title:
+                messagebox.showwarning("Greška", "Popuni oba polja.")
+                return
+
+            # update u repo (trebat će ti nova funkcija)
+            self.repo.update_song_meta(
+                song["id"],
+                new_title,
+                new_artist
+            )
+
+            self.load_song_list()
+            win.destroy()
+
+        ttk.Button(win, text="Spremi", command=save_changes).pack(pady=15)
+
+        win.grab_set()
+        win.focus_set()
+   
     def load_song_list(self):
 
         
 
         self.song_list.delete(0, tk.END)
+
+        self.reload_data()
 
         self.sorted_songs = sorted(
             self.repo.all(),
@@ -164,6 +234,16 @@ class ChordBook:
                 tk.END,
                 f"{song.get('artist','')} - {song.get('title','')}"
             )
+
+    def reload_data(self):
+
+        self.sorted_songs = sorted(
+            self.repo.all(),
+            key=lambda s: (
+                s.get("artist", "").lower(),
+                s.get("title", "").lower()
+            )
+        )
 
     def new_song(self):
 
@@ -223,6 +303,8 @@ class ChordBook:
             self.current_song["id"],
             content
         )
+
+        self.reload_data()
 
         messagebox.showinfo(
             "Save",
