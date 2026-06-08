@@ -1,9 +1,7 @@
 import re
 
-NOTES = [
-    "C", "C#", "D", "D#", "E", "F",
-    "F#", "G", "G#", "A", "A#", "B"
-]
+NOTES = ["C", "C#", "D", "D#", "E", "F",
+         "F#", "G", "G#", "A", "A#", "B"]
 
 FLAT_TO_SHARP = {
     "Db": "C#",
@@ -13,34 +11,47 @@ FLAT_TO_SHARP = {
     "Bb": "A#"
 }
 
-CHORD_PATTERN = re.compile(
-    r"\b([A-G](?:#|b)?)(.*?)(?=\s|$)"
+# chord = root + optional modifiers + optional bass
+CHORD_REGEX = re.compile(
+    r"([A-G](?:#|b)?(?:m|maj|min|dim|aug|sus\d*|add\d*|7|9|11|13)*)"
+    r"(?:/([A-G](?:#|b)?))?"
 )
 
 
-def transpose_chord(chord, steps):
-    match = CHORD_PATTERN.match(chord)
+def normalize(note):
+    return FLAT_TO_SHARP.get(note, note)
 
-    if not match:
-        return chord
 
-    root = match.group(1)
-    suffix = match.group(2)
+def transpose_note(note, steps):
+    note = normalize(note)
 
-    root = FLAT_TO_SHARP.get(root, root)
+    if note not in NOTES:
+        return note
 
-    if root not in NOTES:
-        return chord
-
-    idx = NOTES.index(root)
-    idx = (idx + steps) % len(NOTES)
-
-    return NOTES[idx] + suffix
+    i = NOTES.index(note)
+    return NOTES[(i + steps) % 12]
 
 
 def transpose_text(text, steps):
 
     def replace(match):
-        return transpose_chord(match.group(0), steps)
+        chord = match.group(1)
+        bass = match.group(2)
 
-    return CHORD_PATTERN.sub(replace, text)
+        # split root + suffix
+        m = re.match(r"([A-G](?:#|b)?)(.*)", chord)
+        if not m:
+            return chord
+
+        root = m.group(1)
+        suffix = m.group(2)
+
+        new_root = transpose_note(root, steps)
+
+        if bass:
+            new_bass = transpose_note(bass, steps)
+            return f"{new_root}{suffix}/{new_bass}"
+
+        return f"{new_root}{suffix}"
+
+    return CHORD_REGEX.sub(replace, text)

@@ -182,8 +182,8 @@ class ChordBook:
                 return
 
             song = self.repo.add_song(
-                title,
                 artist,
+                title,
                 ""
             )
 
@@ -421,7 +421,14 @@ class ChordBook:
             )
             return
 
-        # uzmi fresh verziju iz baze
+        confirm = messagebox.askyesno(
+            "Potvrda refresh-a",
+            "Jeste li sigurni da želite refresh?\n\nSve nespremljene promjene će biti izgubljene."
+        )
+
+        if not confirm:
+            return
+
         songs = self.repo.all()
 
         fresh_song = None
@@ -440,7 +447,6 @@ class ChordBook:
 
         self.current_song = fresh_song
 
-    # reset editor na original iz baze
         self.editor.delete("1.0", tk.END)
         self.editor.insert("1.0", fresh_song["content"])
 
