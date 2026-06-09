@@ -278,6 +278,17 @@ class ChordBook:
             )
 
             self.load_song_list()
+            for i, s in enumerate(self.sorted_songs):
+                if s["id"] == song["id"]:
+                    self.song_list.selection_clear(0, tk.END)
+                    self.song_list.selection_set(i)
+                    self.song_list.see(i)
+
+                    self.current_song = s
+                    self.editor.delete("1.0", tk.END)
+                    self.editor.insert("1.0", s["content"])
+                    self.update_preview()
+                    break
             win.destroy()
 
         ttk.Button(

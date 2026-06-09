@@ -11,9 +11,12 @@ FLAT_TO_SHARP = {
     "Bb": "A#"
 }
 
+H_TO_B = {
+       "H": "B"
+    }
 # chord = root + optional modifiers + optional bass
 CHORD_REGEX = re.compile(
-    r"([A-G](?:#|b)?(?:m|maj|min|dim|aug|sus\d*|add\d*|7|9|11|13)*)"
+    r"([A-H](?:#|b)?(?:m|maj|min|dim|aug|sus\d*|add\d*|7|9|11|13)*)"
     r"(?:/([A-G](?:#|b)?))?"
 )
 
@@ -34,6 +37,8 @@ def transpose_note(note, steps):
 
 def transpose_text(text, steps):
 
+    
+    
     def replace(match):
         chord = match.group(1)
         bass = match.group(2)
@@ -44,6 +49,7 @@ def transpose_text(text, steps):
             return chord
 
         root = m.group(1)
+        root = H_TO_B.get(root, root)
         suffix = m.group(2)
 
         new_root = transpose_note(root, steps)
