@@ -2,3 +2,6 @@ Dodati više JSON-a. Ako netko želi imati više baza,
 i onda odabir koju bazu želi koristiti
 
 Dodati tagove, filtere, kategorije i search bar za pjesme
+
+Pop up kad se promjeni selektirana pjesma
+ako su napravljene promjene na trenutnoj pjesmi.
