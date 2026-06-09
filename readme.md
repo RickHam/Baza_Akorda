@@ -18,4 +18,5 @@ I radim ju solo pa očekujte bugove.
 Probat cu s vremenom dodavati feature i fixat bugove koje iskrsnu.
 
 I tak sam dobar kod napisal da se windows defender aktivira.
-Just allow it, kunem se, nije virus (nebi virus ni znal sprogramirati)
+Just allow it (klik na read more pa se pojavi gumb)
+Kunem se, nije virus (nebi virus ni znal sprogramirati)
