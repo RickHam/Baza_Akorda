@@ -19,7 +19,7 @@ class ChordBook:
         self.sorted_songs = []
 
         self.root = root
-        self.root.title("ChordBook")
+        self.root.title("GitaroSvir")
 
         self.repo = SongRepository()
 

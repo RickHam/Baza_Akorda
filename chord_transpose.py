@@ -22,6 +22,7 @@ CHORD_REGEX = re.compile(
 
 
 def normalize(note):
+    note = H_TO_B.get(note, note)
     return FLAT_TO_SHARP.get(note, note)
 
 
@@ -44,12 +45,11 @@ def transpose_text(text, steps):
         bass = match.group(2)
 
         # split root + suffix
-        m = re.match(r"([A-G](?:#|b)?)(.*)", chord)
+        m = re.match(r"([A-H](?:#|b)?)(.*)", chord)
         if not m:
             return chord
 
         root = m.group(1)
-        root = H_TO_B.get(root, root)
         suffix = m.group(2)
 
         new_root = transpose_note(root, steps)
