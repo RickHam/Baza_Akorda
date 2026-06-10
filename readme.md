@@ -37,6 +37,7 @@ staviti virus u kod.
 
 
 **Debug:**
+
 Ako je json izbrisan i crasha aplikacija (nebi se trebalo dogoditi):
 napravi prazan songs.json i pokreni ponovo aplikaciju.
 
