@@ -1,9 +1,11 @@
 Dodati više JSON-a. Ako netko želi imati više baza, 
 i onda odabir koju bazu želi koristiti
 
-Dodati tagove, filtere, kategorije i search bar za pjesme
+Dodati tagove, filtere, kategorije,scroll i search bar za pjesme
 
 Pop up kad se promjeni selektirana pjesma
 ako su napravljene promjene na trenutnoj pjesmi.
 
 Dodati autoscroll za pjesme.
+
+Kod dodavanja pjesme da pritiskom se upiše zadnje upisani izvođač
