@@ -16,7 +16,7 @@ ludi zagorec s pristupom Pythonu. Pa vi birajte kaj vam je draže.
 
 1. Skini dist folder. (ili cijeli file). Pritiskom na Code i download zip.
 2. extractaj
-3. pokreni .exe u dist folderu
+3. pokreni .exe u dist folderu (Za linux pokreni main)
 TO JE TO!
 
 u dist folderu se nalazi moj songs.json koji sprema akorde za pjesme.
